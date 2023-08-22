@@ -1,26 +1,41 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from 'vscode'
+import yaml from 'yaml'
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+const toYaml = input => yaml.stringify(input, undefined, {
+  schema: `core`,
+  lineWidth: 0,
+  minContentWidth: 0,
+  singleQuote: true,
+  nullStr: `~`,
+})
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "export-command-list" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('export-command-list.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from export-command-list!');
-	});
-
-	context.subscriptions.push(disposable);
+export const activate = (context: vscode.ExtensionContext) => {
+  const outputChannel = vscode.window.createOutputChannel(`jaid-list-commands`)
+  try {
+    outputChannel.appendLine(`jaid-list-commands starting`)
+    const disposable = vscode.commands.registerCommand(`jaid-list-commands.listCommands`, async () => {
+      try {
+        const result = {}
+        const commands = await vscode.commands.getCommands(true)
+        for (const command of commands) {
+          const commandInfo = await vscode.commands.getCommand(command)
+          if (!commandInfo) {
+            result[command] = null
+            continue
+          }
+          result[command] = commandInfo
+        }
+        const document = await vscode.workspace.openTextDocument({
+          content: toYaml(result),
+          language: `yaml`,
+        })
+        await vscode.window.showTextDocument(document)
+      } catch (error) {
+        outputChannel.appendLine(`Error: ${error}`)
+      }
+		  })
+	  context.subscriptions.push(disposable)
+  } catch (error) {
+	  outputChannel.appendLine(`Error: ${error}`)
+  }
 }
-
-// This method is called when your extension is deactivated
-export function deactivate() {}

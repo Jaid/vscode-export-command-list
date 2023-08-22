@@ -14,7 +14,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "export-command-list.helloWorld",
+        "command": "export-command-list.export",
         "title": "Hello World"
       }
     ]
@@ -27,25 +27,26 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "lint": "eslint src --ext ts"
   },
   "devDependencies": {
-    "@types/vscode": "^1.81.0",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "20.5.1",
+    "@types/vscode": "^1.81.0",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
-    "eslint": "^8.47.0",
-    "glob": "^10.3.3",
-    "mocha": "^10.2.0",
-    "typescript": "^5.1.6",
-    "ts-loader": "^9.4.4",
-    "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4",
     "@vscode/test-electron": "^2.3.4",
+    "eslint": "^8.47.0",
+    "eslint-config-jaid": "^4.6.0",
+    "glob": "^10.3.3",
+    "ts-loader": "^9.4.4",
     "tsconfig-jaid": "^4.6.0",
-    "eslint-config-jaid": "^4.6.0"
+    "typescript": "^5.1.6",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "yaml": "^2.3.1"
   }
 }
